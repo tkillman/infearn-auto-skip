@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { ConfigKey, ConfigStorageSyncRepo } from './db/config.repo';
 
@@ -6,6 +6,16 @@ const configStorageSyncRepo = ConfigStorageSyncRepo.getInstance();
 
 function App() {
     const [checked, setChecked] = useState<boolean>(false);
+
+    useEffect(() => {
+        configStorageSyncRepo.getAutoSkipIsEnabled(ConfigKey.autoSkip).then((result) => {
+            if (result === null) {
+                setChecked(false);
+            } else {
+                setChecked(result);
+            }
+        });
+    }, []);
 
     const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newChecked = e.target.checked;
